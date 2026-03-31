@@ -32,8 +32,16 @@
     .product-tags{margin:8px 0}
     .tag{background:#fff0f0;color:#FF6B6B;font-size:11px;padding:2px 8px;border-radius:8px;margin-right:4px}
     .tag.hot{background:#fff5f5;color:#e53e3e;font-weight:600}
-    .order-btn{display:block;width:100%;background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;margin-top:8px;transition:all 0.2s}
+    .order-btn{display:block;width:100%;background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;margin-top:8px;transition:all 0.2s;cursor:pointer;border:none}
     .order-btn:hover{transform:scale(1.02)}
+    .qr-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999}
+    .qr-modal.show{display:flex}
+    .qr-content{background:#fff;border-radius:16px;padding:24px;text-align:center;max-width:320px;width:90%}
+    .qr-title{font-size:18px;font-weight:700;color:#333;margin-bottom:16px}
+    .qr-image{max-width:250px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+    .qr-tip{font-size:13px;color:#666;margin-top:12px;line-height:1.5}
+    .qr-close{background:#f5f5f5;border:none;padding:10px 24px;border-radius:20px;margin-top:16px;font-size:14px;cursor:pointer;color:#666}
+    .qr-close:hover{background:#eee}
     .input-area{background:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;border-top:1px solid #eee}
     .input-area input{flex:1;border:2px solid #e0e0e0;border-radius:20px;padding:10px 16px;font-size:14px;outline:none}
     .input-area input:focus{border-color:#FF6B6B}
@@ -52,7 +60,7 @@
   <div class="tips-title">💡 使用说明</div>
   <div class="tips-list">
     📌 选择分类或直接搜索想要的权益<br>
-    🎁 下单后联系润石发货/充值<br>
+    🎁 下单后联系润石，发货/充值更便捷<br>
     💰 全网低价，正品保障
   </div>
 </div>
@@ -63,46 +71,49 @@
     <button class="send-btn" id="sendBtn">➤</button>
   </div>
 </div>
+
+<!-- 二维码弹窗 -->
+<div class="qr-modal" id="qrModal">
+  <div class="qr-content">
+    <div class="qr-title">👇 扫码联系润石 👇</div>
+    <img class="qr-image" src="qrcode.png" alt="联系润石">
+    <div class="qr-tip">长按识别二维码<br>或截图保存到相册</div>
+    <button class="qr-close" onclick="closeQR()">关闭</button>
+  </div>
+</div>
+
 <script>
-// 产品数据库（可后续扩展）
+// 二维码图片地址
+var QR_IMAGE = 'qrcode.png';
+
+// 产品数据库
 var PRODUCTS=[
-  // 视频会员
-  {id:"iqiyi_m",name:"爱奇艺黄金月卡",price:15.8,original:25,category:"视频会员",sub:"爱奇艺",period:"1个月",desc:"即时到账，正品保障",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"iqiyi_y",name:"爱奇艺黄金年卡",price:168,original:248,category:"视频会员",sub:"爱奇艺",period:"12个月",desc:"超值年费，追剧无忧",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"tencent_m",name:"腾讯视频月卡",price:16.8,original:30,category:"视频会员",sub:"腾讯视频",period:"1个月",desc:"NBA/热剧畅看",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"tencent_y",name:"腾讯视频年卡",price:168,original:288,category:"视频会员",sub:"腾讯视频",period:"12个月",desc:"年度大促低价",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"youku_m",name:"优酷月卡",price:10.8,original:20,category:"视频会员",sub:"优酷",period:"1个月",desc:"追剧必备",url:"https://smkq.ymsat.cn"},
-  {id:"youku_y",name:"优酷年卡",price:99,original:198,category:"视频会员",sub:"优酷",period:"12个月",desc:"半价年费",url:"https://smkq.ymsat.cn"},
-  {id:"bilibili_y",name:"B站大会员年卡",price:148,original:233,category:"视频会员",sub:"B站",period:"12个月",desc:"番剧/漫画免费看",url:"https://smkq.ymsat.cn",hot:true},
-  
-  // 外卖餐饮
-  {id:"meituan_50",name:"美团外卖券包",price:35,original:50,category:"外卖餐饮",sub:"美团",period:"即时",desc:"25元无门槛券包",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"meituan_100",name:"美团外卖大额券包",price:68,original:100,category:"外卖餐饮",sub:"美团",period:"即时",desc:"80元无门槛券包",url:"https://smkq.ymsat.cn"},
-  {id:"ele_50",name:"饿了么券包",price:35,original:50,category:"外卖餐饮",sub:"饿了么",period:"即时",desc:"红包抵用券",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"luckin_30",name:"瑞幸咖啡30元券",price:22,original:30,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"全国通用",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"luckin_50",name:"瑞幸咖啡50元券",price:38,original:50,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"大杯拿铁可用",url:"https://smkq.ymsat.cn"},
-  {id:"kfc_30",name:"肯德基30元代金券",price:25,original:30,category:"外卖餐饮",sub:"肯德基",period:"即时",desc:"到店/外卖通用",url:"https://smkq.ymsat.cn"},
-  {id:"mcd_20",name:"麦当劳20元代金券",price:17,original:20,category:"外卖餐饮",sub:"麦当劳",period:"即时",desc:"正新鸡排/饮料",url:"https://smkq.ymsat.cn"},
-  
-  // 音乐会员
-  {id:"netmusic_y",name:"网易云音乐年卡",price:78,original:158,category:"音乐会员",sub:"网易云",period:"12个月",desc:"无损音质/免费下载",url:"https://smkq.ymsat.cn",hot:true},
-  {id:"qqmusic_y",name:"QQ音乐年卡",price:88,original:168,category:"音乐会员",sub:"QQ音乐",period:"12个月",desc:"付费歌曲畅听",url:"https://smkq.ymsat.cn"},
-  {id:"kugou_y",name:"酷狗音乐年卡",price:58,original:128,category:"音乐会员",sub:"酷狗",period:"12个月",desc:"HiFi音质",url:"https://smkq.ymsat.cn"},
-  
-  // 生活服务
-  {id:"didichuxing_20",name:"滴滴出行20元券包",price:15,original:20,category:"生活服务",sub:"滴滴",period:"即时",desc:"打车抵扣",url:"https://smkq.ymsat.cn"},
-  {id:"didichuxing_50",name:"滴滴出行50元券包",price:38,original:50,category:"生活服务",sub:"滴滴",period:"即时",desc:"大额出行券",url:"https://smkq.ymsat.cn"},
-  {id:"shuangshiyiqi_y",name:"双十一一键保价",price:9.9,original:29,category:"生活服务",sub:"其他",period:"一年有效",desc:"自动监控价格",url:"https://smkq.ymsat.cn"},
-  
-  // 办公效率
-  {id:"wps_y",name:"WPS会员年卡",price:68,original:148,category:"办公效率",sub:"WPS",period:"12个月",desc:"文档转换/云空间",url:"https://smkq.ymsat.cn"},
-  {id:"wps_m",name:"WPS会员月卡",price:8,original:15,category:"办公效率",sub:"WPS",period:"1个月",desc:"PDF转换",url:"https://smkq.ymsat.cn"},
-  {id:"youdao_y",name:"有道云笔记年卡",price:68,original:198,category:"办公效率",sub:"有道",period:"12个月",desc:"跨设备同步",url:"https://smkq.ymsat.cn"},
-  
-  // 游戏娱乐
-  {id:"game_50",name:"游戏点卡50元",price:45,original:50,category:"游戏娱乐",sub:"通用",period:"即时",desc:"王者荣耀/和平精英",url:"https://smkq.ymsat.cn"},
-  {id:"game_100",name:"游戏点卡100元",price:92,original:100,category:"游戏娱乐",sub:"通用",period:"即时",desc:"多游戏通用",url:"https://smkq.ymsat.cn"},
-  {id:"netease_100",name:"网易一卡通100元",price:93,original:100,category:"游戏娱乐",sub:"网易",period:"即时",desc:"梦幻西游/大话西游",url:"https://smkq.ymsat.cn"}
+  {id:"iqiyi_m",name:"爱奇艺黄金月卡",price:15.8,original:25,category:"视频会员",sub:"爱奇艺",period:"1个月",desc:"即时到账，正品保障",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"iqiyi_y",name:"爱奇艺黄金年卡",price:168,original:248,category:"视频会员",sub:"爱奇艺",period:"12个月",desc:"超值年费，追剧无忧",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"tencent_m",name:"腾讯视频月卡",price:16.8,original:30,category:"视频会员",sub:"腾讯视频",period:"1个月",desc:"NBA/热剧畅看",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"tencent_y",name:"腾讯视频年卡",price:168,original:288,category:"视频会员",sub:"腾讯视频",period:"12个月",desc:"年度大促低价",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"youku_m",name:"优酷月卡",price:10.8,original:20,category:"视频会员",sub:"优酷",period:"1个月",desc:"追剧必备",url:"http://smkq.ymsat.cn/"},
+  {id:"youku_y",name:"优酷年卡",price:99,original:198,category:"视频会员",sub:"优酷",period:"12个月",desc:"半价年费",url:"http://smkq.ymsat.cn/"},
+  {id:"bilibili_y",name:"B站大会员年卡",price:148,original:233,category:"视频会员",sub:"B站",period:"12个月",desc:"番剧/漫画免费看",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"meituan_50",name:"美团外卖券包",price:35,original:50,category:"外卖餐饮",sub:"美团",period:"即时",desc:"25元无门槛券包",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"meituan_100",name:"美团外卖大额券包",price:68,original:100,category:"外卖餐饮",sub:"美团",period:"即时",desc:"80元无门槛券包",url:"http://smkq.ymsat.cn/"},
+  {id:"ele_50",name:"饿了么券包",price:35,original:50,category:"外卖餐饮",sub:"饿了么",period:"即时",desc:"红包抵用券",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"luckin_30",name:"瑞幸咖啡30元券",price:22,original:30,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"全国通用",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"luckin_50",name:"瑞幸咖啡50元券",price:38,original:50,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"大杯拿铁可用",url:"http://smkq.ymsat.cn/"},
+  {id:"kfc_30",name:"肯德基30元代金券",price:25,original:30,category:"外卖餐饮",sub:"肯德基",period:"即时",desc:"到店/外卖通用",url:"http://smkq.ymsat.cn/"},
+  {id:"mcd_20",name:"麦当劳20元代金券",price:17,original:20,category:"外卖餐饮",sub:"麦当劳",period:"即时",desc:"正新鸡排/饮料",url:"http://smkq.ymsat.cn/"},
+  {id:"netmusic_y",name:"网易云音乐年卡",price:78,original:158,category:"音乐会员",sub:"网易云",period:"12个月",desc:"无损音质/免费下载",url:"http://smkq.ymsat.cn/",hot:true},
+  {id:"qqmusic_y",name:"QQ音乐年卡",price:88,original:168,category:"音乐会员",sub:"QQ音乐",period:"12个月",desc:"付费歌曲畅听",url:"http://smkq.ymsat.cn/"},
+  {id:"kugou_y",name:"酷狗音乐年卡",price:58,original:128,category:"音乐会员",sub:"酷狗",period:"12个月",desc:"HiFi音质",url:"http://smkq.ymsat.cn/"},
+  {id:"didichuxing_20",name:"滴滴出行20元券包",price:15,original:20,category:"生活服务",sub:"滴滴",period:"即时",desc:"打车抵扣",url:"http://smkq.ymsat.cn/"},
+  {id:"didichuxing_50",name:"滴滴出行50元券包",price:38,original:50,category:"生活服务",sub:"滴滴",period:"即时",desc:"大额出行券",url:"http://smkq.ymsat.cn/"},
+  {id:"shuangshiyiqi_y",name:"双十一一键保价",price:9.9,original:29,category:"生活服务",sub:"其他",period:"一年有效",desc:"自动监控价格",url:"http://smkq.ymsat.cn/"},
+  {id:"wps_y",name:"WPS会员年卡",price:68,original:148,category:"办公效率",sub:"WPS",period:"12个月",desc:"文档转换/云空间",url:"http://smkq.ymsat.cn/"},
+  {id:"wps_m",name:"WPS会员月卡",price:8,original:15,category:"办公效率",sub:"WPS",period:"1个月",desc:"PDF转换",url:"http://smkq.ymsat.cn/"},
+  {id:"youdao_y",name:"有道云笔记年卡",price:68,original:198,category:"办公效率",sub:"有道",period:"12个月",desc:"跨设备同步",url:"http://smkq.ymsat.cn/"},
+  {id:"game_50",name:"游戏点卡50元",price:45,original:50,category:"游戏娱乐",sub:"通用",period:"即时",desc:"王者荣耀/和平精英",url:"http://smkq.ymsat.cn/"},
+  {id:"game_100",name:"游戏点卡100元",price:92,original:100,category:"游戏娱乐",sub:"通用",period:"即时",desc:"多游戏通用",url:"http://smkq.ymsat.cn/"},
+  {id:"netease_100",name:"网易一卡通100元",price:93,original:100,category:"游戏娱乐",sub:"网易",period:"即时",desc:"梦幻西游/大话西游",url:"http://smkq.ymsat.cn/"}
 ];
 
 var CATEGORIES=[
@@ -116,6 +127,21 @@ var CATEGORIES=[
 ];
 
 var currentCategory = null;
+
+// 打开二维码弹窗
+function openQR() {
+  document.getElementById('qrModal').classList.add('show');
+}
+
+// 关闭二维码弹窗
+function closeQR() {
+  document.getElementById('qrModal').classList.remove('show');
+}
+
+// 点击弹窗背景也可关闭
+document.getElementById('qrModal').addEventListener('click', function(e) {
+  if (e.target === this) closeQR();
+});
 
 function addBotMsg(html) {
   var wrap = document.createElement("div");
@@ -167,7 +193,7 @@ function showProducts(list, title) {
       '<div class="product-price">' + p.price + '元 <span style="text-decoration:line-through;color:#999;font-size:12px;font-weight:400">' + p.original + '元</span></div>' +
       '<div class="product-desc">' + p.desc + ' · ' + p.period + '</div>' +
       '<div class="product-tags"><span class="tag">' + p.sub + '</span><span class="tag">' + p.period + '</span>' + hotTag + '</div>' +
-      '<a class="order-btn" href="' + p.url + '" target="_blank">联系润石购买 →</a>' +
+      '<button class="order-btn" onclick="openQR()">🎫 联系润石购买 →</button>' +
       '</div>';
   }
   addBotMsg(html);
@@ -226,7 +252,6 @@ function handleSend() {
   if (!text) return;
   input.value = "";
   
-  // 检查是否是分类关键词
   var catKeywords = {"视频": "视频会员", "爱奇艺": "视频会员", "腾讯": "视频会员", "优酷": "视频会员", "b站": "视频会员",
                      "外卖": "外卖餐饮", "美团": "外卖餐饮", "饿了么": "外卖餐饮", "瑞幸": "外卖餐饮", "咖啡": "外卖餐饮",
                      "音乐": "音乐会员", "网易云": "音乐会员", "qq音乐": "音乐会员",
@@ -239,8 +264,6 @@ function handleSend() {
       return;
     }
   }
-  
-  // 默认按关键词搜索
   searchProducts(text);
 }
 
