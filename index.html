@@ -18,7 +18,7 @@
     .bubble-wrap{display:flex;align-items:flex-end;gap:8px}
     .bubble-wrap.user{flex-direction:row-reverse}
     .avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:#fff;color:#FF6B6B;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-    .bubble{max-width:80%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
+    .bubble{max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
     .bubble.bot{background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
     .bubble.user{background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;border-bottom-right-radius:4px}
     .quick-btns{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 6px 40px}
@@ -28,12 +28,20 @@
     .product-name{font-size:15px;font-weight:700;color:#222;margin-bottom:6px}
     .product-price{font-size:20px;font-weight:800;color:#FF6B6B}
     .product-price span{font-size:11px;color:#999;font-weight:400}
+    .price-compare{background:#f8f8f8;border-radius:8px;padding:8px 10px;margin:6px 0;font-size:12px}
+    .price-compare .official{color:#999;text-decoration:line-through}
+    .price-compare .save{color:#52c41a;font-weight:600}
+    .price-compare .save::before{content:"省 ";color:#999;font-weight:normal}
     .product-desc{font-size:12px;color:#666;margin:6px 0;line-height:1.4}
     .product-tags{margin:8px 0}
     .tag{background:#fff0f0;color:#FF6B6B;font-size:11px;padding:2px 8px;border-radius:8px;margin-right:4px}
     .tag.hot{background:#fff5f5;color:#e53e3e;font-weight:600}
-    .order-btn{display:block;width:100%;background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;margin-top:8px;transition:all 0.2s;cursor:pointer;border:none}
+    .tag.recommend{background:#e8f5e9;color:#52c41a}
+    .product-footer{display:flex;gap:8px;margin-top:8px}
+    .order-btn{flex:1;background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none}
     .order-btn:hover{transform:scale(1.02)}
+    .compare-btn{flex:1;background:#fff;border:1.5px solid #FF6B6B;color:#FF6B6B;text-align:center;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer}
+    .compare-btn:hover{background:#fff5f5}
     .qr-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999}
     .qr-modal.show{display:flex}
     .qr-content{background:#fff;border-radius:16px;padding:24px;text-align:center;max-width:320px;width:90%}
@@ -42,13 +50,23 @@
     .qr-tip{font-size:13px;color:#666;margin-top:12px;line-height:1.5}
     .qr-close{background:#f5f5f5;border:none;padding:10px 24px;border-radius:20px;margin-top:16px;font-size:14px;cursor:pointer;color:#666}
     .qr-close:hover{background:#eee}
+    .faq-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .faq-q{color:#333;font-weight:600;margin-bottom:8px;font-size:14px}
+    .faq-a{color:#666;font-size:13px;line-height:1.6;padding-left:12px;border-left:3px solid #FF6B6B}
     .input-area{background:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;border-top:1px solid #eee}
     .input-area input{flex:1;border:2px solid #e0e0e0;border-radius:20px;padding:10px 16px;font-size:14px;outline:none}
     .input-area input:focus{border-color:#FF6B6B}
     .send-btn{width:42px;height:42px;background:linear-gradient(135deg,#FF6B6B,#FFA07A);border:none;border-radius:50%;color:#fff;font-size:16px;cursor:pointer;transition:all 0.2s}
     .send-btn:hover{transform:scale(1.08)}
-    .search-box{background:#fff;padding:12px;border-bottom:1px solid #eee}
-    .search-box input{width:100%;border:2px solid #FF6B6B;border-radius:10px;padding:10px;font-size:14px;outline:none}
+    .compare-panel{background:#fff;border-radius:12px;padding:16px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+    .compare-title{font-size:15px;font-weight:700;color:#333;margin-bottom:12px}
+    .compare-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee}
+    .compare-row:last-child{border-bottom:none}
+    .compare-label{color:#666}
+    .compare-platform{color:#FF6B6B;font-weight:700}
+    .compare-official{color:#999}
+    .compare-save{color:#52c41a;font-weight:700}
+    .badge{background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:6px}
   </style>
 </head>
 <body>
@@ -59,15 +77,15 @@
 <div class="tips">
   <div class="tips-title">💡 使用说明</div>
   <div class="tips-list">
-    📌 选择分类或直接搜索想要的权益<br>
-    🎁 下单后联系润石，发货/充值更便捷<br>
-    💰 全网低价，正品保障
+    🔍 输入关键词或选择分类浏览<br>
+    💰 价格对比：平台价 vs 官方价<br>
+    📞 扫码联系润石，咨询/购买/售后
   </div>
 </div>
 <div class="chat-container">
   <div class="messages" id="messages"></div>
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="搜索想要的权益...">
+    <input type="text" id="userInput" placeholder="搜索权益/提问（如：爱奇艺怎么用）...">
     <button class="send-btn" id="sendBtn">➤</button>
   </div>
 </div>
@@ -83,39 +101,68 @@
 </div>
 
 <script>
-// 二维码图片地址
+// ============ 配置 ============
 var QR_IMAGE = 'qrcode.png';
+var PLATFORM_NAME = '润石券宝';
 
-// 产品数据库
+// ============ 产品数据库 ============
 var PRODUCTS=[
-  {id:"iqiyi_m",name:"爱奇艺黄金月卡",price:15.8,original:25,category:"视频会员",sub:"爱奇艺",period:"1个月",desc:"即时到账，正品保障",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"iqiyi_y",name:"爱奇艺黄金年卡",price:168,original:248,category:"视频会员",sub:"爱奇艺",period:"12个月",desc:"超值年费，追剧无忧",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"tencent_m",name:"腾讯视频月卡",price:16.8,original:30,category:"视频会员",sub:"腾讯视频",period:"1个月",desc:"NBA/热剧畅看",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"tencent_y",name:"腾讯视频年卡",price:168,original:288,category:"视频会员",sub:"腾讯视频",period:"12个月",desc:"年度大促低价",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"youku_m",name:"优酷月卡",price:10.8,original:20,category:"视频会员",sub:"优酷",period:"1个月",desc:"追剧必备",url:"http://smkq.ymsat.cn/"},
-  {id:"youku_y",name:"优酷年卡",price:99,original:198,category:"视频会员",sub:"优酷",period:"12个月",desc:"半价年费",url:"http://smkq.ymsat.cn/"},
-  {id:"bilibili_y",name:"B站大会员年卡",price:148,original:233,category:"视频会员",sub:"B站",period:"12个月",desc:"番剧/漫画免费看",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"meituan_50",name:"美团外卖券包",price:35,original:50,category:"外卖餐饮",sub:"美团",period:"即时",desc:"25元无门槛券包",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"meituan_100",name:"美团外卖大额券包",price:68,original:100,category:"外卖餐饮",sub:"美团",period:"即时",desc:"80元无门槛券包",url:"http://smkq.ymsat.cn/"},
-  {id:"ele_50",name:"饿了么券包",price:35,original:50,category:"外卖餐饮",sub:"饿了么",period:"即时",desc:"红包抵用券",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"luckin_30",name:"瑞幸咖啡30元券",price:22,original:30,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"全国通用",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"luckin_50",name:"瑞幸咖啡50元券",price:38,original:50,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"大杯拿铁可用",url:"http://smkq.ymsat.cn/"},
-  {id:"kfc_30",name:"肯德基30元代金券",price:25,original:30,category:"外卖餐饮",sub:"肯德基",period:"即时",desc:"到店/外卖通用",url:"http://smkq.ymsat.cn/"},
-  {id:"mcd_20",name:"麦当劳20元代金券",price:17,original:20,category:"外卖餐饮",sub:"麦当劳",period:"即时",desc:"正新鸡排/饮料",url:"http://smkq.ymsat.cn/"},
-  {id:"netmusic_y",name:"网易云音乐年卡",price:78,original:158,category:"音乐会员",sub:"网易云",period:"12个月",desc:"无损音质/免费下载",url:"http://smkq.ymsat.cn/",hot:true},
-  {id:"qqmusic_y",name:"QQ音乐年卡",price:88,original:168,category:"音乐会员",sub:"QQ音乐",period:"12个月",desc:"付费歌曲畅听",url:"http://smkq.ymsat.cn/"},
-  {id:"kugou_y",name:"酷狗音乐年卡",price:58,original:128,category:"音乐会员",sub:"酷狗",period:"12个月",desc:"HiFi音质",url:"http://smkq.ymsat.cn/"},
-  {id:"didichuxing_20",name:"滴滴出行20元券包",price:15,original:20,category:"生活服务",sub:"滴滴",period:"即时",desc:"打车抵扣",url:"http://smkq.ymsat.cn/"},
-  {id:"didichuxing_50",name:"滴滴出行50元券包",price:38,original:50,category:"生活服务",sub:"滴滴",period:"即时",desc:"大额出行券",url:"http://smkq.ymsat.cn/"},
-  {id:"shuangshiyiqi_y",name:"双十一一键保价",price:9.9,original:29,category:"生活服务",sub:"其他",period:"一年有效",desc:"自动监控价格",url:"http://smkq.ymsat.cn/"},
-  {id:"wps_y",name:"WPS会员年卡",price:68,original:148,category:"办公效率",sub:"WPS",period:"12个月",desc:"文档转换/云空间",url:"http://smkq.ymsat.cn/"},
-  {id:"wps_m",name:"WPS会员月卡",price:8,original:15,category:"办公效率",sub:"WPS",period:"1个月",desc:"PDF转换",url:"http://smkq.ymsat.cn/"},
-  {id:"youdao_y",name:"有道云笔记年卡",price:68,original:198,category:"办公效率",sub:"有道",period:"12个月",desc:"跨设备同步",url:"http://smkq.ymsat.cn/"},
-  {id:"game_50",name:"游戏点卡50元",price:45,original:50,category:"游戏娱乐",sub:"通用",period:"即时",desc:"王者荣耀/和平精英",url:"http://smkq.ymsat.cn/"},
-  {id:"game_100",name:"游戏点卡100元",price:92,original:100,category:"游戏娱乐",sub:"通用",period:"即时",desc:"多游戏通用",url:"http://smkq.ymsat.cn/"},
-  {id:"netease_100",name:"网易一卡通100元",price:93,original:100,category:"游戏娱乐",sub:"网易",period:"即时",desc:"梦幻西游/大话西游",url:"http://smkq.ymsat.cn/"}
+  // 视频会员
+  {id:"iqiyi_m",name:"爱奇艺黄金月卡",price:15.8,original:25,official:25,category:"视频会员",sub:"爱奇艺",period:"1个月",desc:"即时到账，正品保障",score:98,hot:true,recommend:"追剧首选"},
+  {id:"iqiyi_y",name:"爱奇艺黄金年卡",price:168,original:248,official:248,category:"视频会员",sub:"爱奇艺",period:"12个月",desc:"超值年费，追剧无忧",score:95,hot:true,recommend:"性价比最高"},
+  {id:"tencent_m",name:"腾讯视频月卡",price:16.8,original:30,official:30,category:"视频会员",sub:"腾讯视频",period:"1个月",desc:"NBA/热剧畅看",score:97,hot:true,recommend:"球赛必备"},
+  {id:"tencent_y",name:"腾讯视频年卡",price:168,original:288,official:288,category:"视频会员",sub:"腾讯视频",period:"12个月",desc:"年度大促低价",score:94,hot:true,recommend:"剧迷年费首选"},
+  {id:"youku_m",name:"优酷月卡",price:10.8,original:20,official:20,category:"视频会员",sub:"优酷",period:"1个月",desc:"追剧必备",score:88},
+  {id:"youku_y",name:"优酷年卡",price:99,original:198,official:198,category:"视频会员",sub:"优酷",period:"12个月",desc:"半价年费",score:90},
+  {id:"bilibili_y",name:"B站大会员年卡",price:148,original:233,official:233,category:"视频会员",sub:"B站",period:"12个月",desc:"番剧/漫画免费看",score:96,hot:true,recommend:"二次元必入"},
+  
+  // 外卖餐饮
+  {id:"meituan_50",name:"美团外卖券包",price:35,original:50,official:50,category:"外卖餐饮",sub:"美团",period:"即时",desc:"25元无门槛券包",score:99,hot:true,recommend:"点外卖必备"},
+  {id:"meituan_100",name:"美团外卖大额券包",price:68,original:100,official:100,category:"外卖餐饮",sub:"美团",period:"即时",desc:"80元无门槛券包",score:95,recommend:"大额优惠"},
+  {id:"ele_50",name:"饿了么券包",price:35,original:50,official:50,category:"外卖餐饮",sub:"饿了么",period:"即时",desc:"红包抵用券",score:96,hot:true,recommend:"外卖党福音"},
+  {id:"luckin_30",name:"瑞幸咖啡30元券",price:22,original:30,official:30,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"全国通用",score:97,hot:true,recommend:"咖啡控首选"},
+  {id:"luckin_50",name:"瑞幸咖啡50元券",price:38,original:50,official:50,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"大杯拿铁可用",score:93},
+  {id:"kfc_30",name:"肯德基30元代金券",price:25,original:30,official:30,category:"外卖餐饮",sub:"肯德基",period:"即时",desc:"到店/外卖通用",score:90},
+  {id:"mcd_20",name:"麦当劳20元代金券",price:17,original:20,official:20,category:"外卖餐饮",sub:"麦当劳",period:"即时",desc:"正新鸡排/饮料",score:88},
+  
+  // 音乐会员
+  {id:"netmusic_y",name:"网易云音乐年卡",price:78,original:158,official:158,category:"音乐会员",sub:"网易云",period:"12个月",desc:"无损音质/免费下载",score:98,hot:true,recommend:"音乐发烧友"},
+  {id:"qqmusic_y",name:"QQ音乐年卡",price:88,original:168,official:168,category:"音乐会员",sub:"QQ音乐",period:"12个月",desc:"付费歌曲畅听",score:92},
+  {id:"kugou_y",name:"酷狗音乐年卡",price:58,original:128,official:128,category:"音乐会员",sub:"酷狗",period:"12个月",desc:"HiFi音质",score:85},
+  
+  // 生活服务
+  {id:"didichuxing_20",name:"滴滴出行20元券包",price:15,original:20,official:20,category:"生活服务",sub:"滴滴",period:"即时",desc:"打车抵扣",score:90},
+  {id:"didichuxing_50",name:"滴滴出行50元券包",price:38,original:50,official:50,category:"生活服务",sub:"滴滴",period:"即时",desc:"大额出行券",score:88},
+  {id:"shuangshiyiqi_y",name:"双十一一键保价",price:9.9,original:29,official:29,category:"生活服务",sub:"其他",period:"一年有效",desc:"自动监控价格",score:85},
+  
+  // 办公效率
+  {id:"wps_y",name:"WPS会员年卡",price:68,original:148,official:148,category:"办公效率",sub:"WPS",period:"12个月",desc:"文档转换/云空间",score:92,recommend:"办公人群"},
+  {id:"wps_m",name:"WPS会员月卡",price:8,original:15,official:15,category:"办公效率",sub:"WPS",period:"1个月",desc:"PDF转换",score:88},
+  {id:"youdao_y",name:"有道云笔记年卡",price:68,original:198,official:198,category:"办公效率",sub:"有道",period:"12个月",desc:"跨设备同步",score:85},
+  
+  // 游戏娱乐
+  {id:"game_50",name:"游戏点卡50元",price:45,original:50,official:50,category:"游戏娱乐",sub:"通用",period:"即时",desc:"王者荣耀/和平精英",score:95,hot:true,recommend:"游戏玩家"},
+  {id:"game_100",name:"游戏点卡100元",price:92,original:100,official:100,category:"游戏娱乐",sub:"通用",period:"即时",desc:"多游戏通用",score:92},
+  {id:"netease_100",name:"网易一卡通100元",price:93,original:100,official:100,category:"游戏娱乐",sub:"网易",period:"即时",desc:"梦幻西游/大话西游",score:90}
 ];
 
+// ============ FAQ 知识库 ============
+var FAQS=[
+  {q:"怎么充值/使用？",a:"① 购买后联系润石；② 收到卡密/兑换码；③ 在对应App或官网充值输入卡密即可。会员类直接充值到账，话费类提供手机号充值。"},
+  {q:"充值多久到账？",a:"会员类：付款后1-30分钟内到账；话费类：24小时内到账；卡密类：付款后自动发货。请耐心等待，如超时可联系润石查询。"},
+  {q:"可以开发票吗？",a:"可以开发票。购买前请说明需要发票抬头，联系润石办理。"},
+  {q:"充值失败怎么办？",a:"请保留订单号，联系润石处理。提供：①订单号 ②充值账号 ③失败截图。我们会核实后补发或退款。"},
+  {q:"支持退换吗？",a:"虚拟商品一经充值/发货，概不退换。充值前请确认账号无误。未发货的可申请退款。"},
+  {q:"有售后服务吗？",a:"有！所有商品享受售后服务。充值失败/卡密无效等问题，联系润石，我们提供补发或退款。"},
+  {q:"会员到期了怎么续费？",a:"直接在润石券宝重新购买即可。续费建议提前1-3天，确保会员不断档。"},
+  {q:"可以叠加使用吗？",a:"会员时长可以叠加充值，充值到同一账号自动累加。部分优惠不可与其他活动同享。"},
+  {q:"充值后会员时间怎么算？",a:"月卡从充值到账当天开始计算31天，年卡计算365天。部分平台是即时到账，部分是24小时内到账。"},
+  {q:"价格还能优惠吗？",a:"当前已经是全网低价！批量购买可联系润石申请更大优惠。"},
+  {q:"怎么查询订单？",a:"联系润石查询订单，提供手机号或订单号即可。"},
+  {q:"支持哪些支付方式？",a:"支持微信、支付宝转账，转账后联系润石发货。"}
+];
+
+// ============ 分类 ============
 var CATEGORIES=[
   {id:"all",name:"全部",icon:"🎁",desc:"查看所有权益"},
   {id:"视频会员",name:"视频会员",icon:"🎬",desc:"爱奇艺/腾讯/优酷/B站",hot:true},
@@ -128,21 +175,18 @@ var CATEGORIES=[
 
 var currentCategory = null;
 
-// 打开二维码弹窗
+// ============ 弹窗 ============
 function openQR() {
   document.getElementById('qrModal').classList.add('show');
 }
-
-// 关闭二维码弹窗
 function closeQR() {
   document.getElementById('qrModal').classList.remove('show');
 }
-
-// 点击弹窗背景也可关闭
 document.getElementById('qrModal').addEventListener('click', function(e) {
   if (e.target === this) closeQR();
 });
 
+// ============ 消息 ============
 function addBotMsg(html) {
   var wrap = document.createElement("div");
   wrap.className = "bubble-wrap";
@@ -178,6 +222,21 @@ function scrollToBottom() {
   setTimeout(function() { m.scrollTop = m.scrollHeight; }, 50);
 }
 
+// ============ 价格对比面板 ============
+function showComparePanel(product) {
+  var discount = Math.round((1 - product.price/product.official) * 100);
+  var saveMoney = (product.official - product.price).toFixed(1);
+  
+  var html = '<div class="compare-panel">';
+  html += '<div class="compare-title">📊 价格对比 <span class="badge">省' + discount + '%</span></div>';
+  html += '<div class="compare-row"><span class="compare-label">官方价</span><span class="compare-official">¥' + product.official + '</span></div>';
+  html += '<div class="compare-row"><span class="compare-label">' + PLATFORM_NAME + '价</span><span class="compare-platform">¥' + product.price + '</span></div>';
+  html += '<div class="compare-row"><span class="compare-label">节省</span><span class="compare-save">¥' + saveMoney + '</span></div>';
+  html += '</div>';
+  addBotMsg(html);
+}
+
+// ============ 产品卡片 ============
 function showProducts(list, title) {
   if (list.length === 0) {
     addBotMsg("😢 暂无符合条件的权益商品");
@@ -187,18 +246,85 @@ function showProducts(list, title) {
   for (var i = 0; i < list.length; i++) {
     var p = list[i];
     var hotTag = p.hot ? '<span class="tag hot">🔥 热卖</span>' : '';
-    var discount = Math.round((1 - p.price/p.original) * 100);
-    html += '<div class="product-card">' +
-      '<div class="product-name">' + p.name + ' <span style="background:#ffe0e0;color:#FF6B6B;font-size:11px;padding:2px 6px;border-radius:4px">省'+discount+'%</span></div>' +
-      '<div class="product-price">' + p.price + '元 <span style="text-decoration:line-through;color:#999;font-size:12px;font-weight:400">' + p.original + '元</span></div>' +
-      '<div class="product-desc">' + p.desc + ' · ' + p.period + '</div>' +
-      '<div class="product-tags"><span class="tag">' + p.sub + '</span><span class="tag">' + p.period + '</span>' + hotTag + '</div>' +
-      '<button class="order-btn" onclick="openQR()">🎫 联系润石购买 →</button>' +
-      '</div>';
+    var recTag = p.recommend ? '<span class="tag recommend">⭐ ' + p.recommend + '</span>' : '';
+    var discount = Math.round((1 - p.price/p.official) * 100);
+    var saveMoney = (p.official - p.price).toFixed(1);
+    
+    html += '<div class="product-card" id="prod-' + p.id + '">';
+    html += '<div class="product-name">' + p.name + hotTag + recTag + '</div>';
+    html += '<div class="price-compare">';
+    html += '<span class="official">官方价 ¥' + p.official + '</span>';
+    html += '<span class="save">省¥' + saveMoney + '</span>';
+    html += '</div>';
+    html += '<div class="product-price">' + p.price + '元 <span>/' + p.period + '</span></div>';
+    html += '<div class="product-desc">' + p.desc + '</div>';
+    html += '<div class="product-tags"><span class="tag">' + p.sub + '</span><span class="tag">' + p.period + '</span><span class="tag">评分' + p.score + '</span></div>';
+    html += '<div class="product-footer">';
+    html += '<button class="compare-btn" onclick="showCompare(' + "'" + p.id + "'" + ')">📊 比价</button>';
+    html += '<button class="order-btn" onclick="openQR()">🎫 联系购买</button>';
+    html += '</div>';
+    html += '</div>';
   }
   addBotMsg(html);
 }
 
+function showCompare(id) {
+  var p = PRODUCTS.find(function(x) { return x.id === id; });
+  if (p) showComparePanel(p);
+}
+
+// ============ 热门推荐 ============
+function getHotProducts() {
+  return PRODUCTS.filter(function(p) { return p.hot; }).sort(function(a, b) { return b.score - a.score; });
+}
+
+function getRecommendProducts() {
+  // 基于评分和折扣力度推荐
+  return PRODUCTS.slice().sort(function(a, b) {
+    var scoreA = a.score * (1 - a.price/a.official);
+    var scoreB = b.score * (1 - b.price/b.official);
+    return scoreB - scoreA;
+  }).slice(0, 5);
+}
+
+function showHotRecommendations() {
+  var hotProducts = getHotProducts();
+  var recommendProducts = getRecommendProducts();
+  
+  addBotMsg("🔥 <b>今日热门推荐</b>");
+  showProducts(hotProducts.slice(0, 3));
+  
+  setTimeout(function() {
+    addBotMsg("⭐ <b>性价比之选</b>（综合评分+折扣力度）");
+    showProducts(recommendProducts.slice(0, 3));
+  }, 500);
+}
+
+// ============ FAQ 搜索 ============
+function searchFAQ(keyword) {
+  var kw = keyword.toLowerCase();
+  var results = FAQS.filter(function(f) {
+    return f.q.indexOf(kw) >= 0 || f.a.indexOf(kw) >= 0;
+  });
+  return results;
+}
+
+function showFAQ(results, keyword) {
+  if (results.length === 0) {
+    addBotMsg("🔍 没有找到关于「" + keyword + "」的相关问题<br><br>您可以：<br>① 联系润石咨询<br>② 换个关键词试试");
+    return;
+  }
+  var html = '<b>🔍 找到 ' + results.length + ' 个相关问题：</b><br><br>';
+  for (var i = 0; i < results.length && i < 3; i++) {
+    html += '<div class="faq-card">';
+    html += '<div class="faq-q">Q: ' + results[i].q + '</div>';
+    html += '<div class="faq-a">A: ' + results[i].a + '</div>';
+    html += '</div>';
+  }
+  addBotMsg(html);
+}
+
+// ============ 分类选择 ============
 function selectCategory(catId) {
   currentCategory = catId;
   var cat = CATEGORIES.find(function(c) { return c.id === catId; });
@@ -206,87 +332,152 @@ function selectCategory(catId) {
   addUserMsg("我想看 " + text);
   
   var filtered = catId === "all" ? PRODUCTS : PRODUCTS.filter(function(p) { return p.category === catId; });
-  var hotProducts = filtered.filter(function(p) { return p.hot; });
   
-  if (hotProducts.length > 0) {
-    addBotMsg("🔥 <b>热门推荐</b> — " + cat.name);
-    showProducts(hotProducts.slice(0, 3));
+  // 按热门+评分排序
+  filtered.sort(function(a, b) { return (b.hot?100:0) + b.score - ((a.hot?100:0) + a.score); });
+  
+  addBotMsg("📦 <b>" + cat.name + "</b>（共" + filtered.length + "款，按热门程度排序）");
+  showProducts(filtered.slice(0, 6));
+  
+  if (filtered.length > 6) {
+    setTimeout(function() {
+      addBotMsg("更多" + cat.name + "...");
+      showProducts(filtered.slice(6));
+    }, 500);
   }
-  
-  setTimeout(function() {
-    if (filtered.length > 3) {
-      addBotMsg("📦 <b>更多" + cat.name + "</b>（共" + filtered.length + "款）");
-      showProducts(filtered.slice(3));
-    }
-    addBotMsg("💡 <b>没有找到想要的？</b>直接输入关键词搜索！");
-  }, 600);
 }
 
+// ============ 搜索 ============
 function searchProducts(keyword) {
   if (!keyword) return;
-  addUserMsg(keyword);
+  
+  // 先搜索FAQ
+  var faqResults = searchFAQ(keyword);
+  if (faqResults.length > 0) {
+    showFAQ(faqResults, keyword);
+    return;
+  }
+  
+  // 搜索产品
   var kw = keyword.toLowerCase();
   var results = PRODUCTS.filter(function(p) {
     return p.name.toLowerCase().indexOf(kw) >= 0 ||
            p.category.toLowerCase().indexOf(kw) >= 0 ||
            p.sub.toLowerCase().indexOf(kw) >= 0 ||
-           p.desc.toLowerCase().indexOf(kw) >= 0;
+           p.desc.toLowerCase().indexOf(kw) >= 0 ||
+           (p.recommend && p.recommend.toLowerCase().indexOf(kw) >= 0);
   });
   
   if (results.length === 0) {
-    addBotMsg("🔍 没有找到「" + keyword + "」相关商品<br><br>试试这些关键词：<br>• 视频、音乐、外卖<br>• 爱奇艺、腾讯、美团<br>• 游戏、办公、出行");
+    addBotMsg("🔍 没有找到「" + keyword + "」相关商品或问题<br><br>试试这些：<br>• 爱奇艺、腾讯、美团<br>• 怎么用、充值、售后<br>• 热门、推荐、便宜");
     addButtons([
-      {label:"🎬 视频会员", action:function(){ selectCategory("视频会员"); }},
-      {label:"🍜 外卖餐饮", action:function(){ selectCategory("外卖餐饮"); }},
-      {label:"🎵 音乐会员", action:function(){ selectCategory("音乐会员"); }}
+      {label:"🔥 热门推荐", action:showHotRecommendations},
+      {label:"📋 查看全部", action:function(){ selectCategory("all"); }}
     ]);
   } else {
-    addBotMsg("🔍 找到 <b>" + results.length + "</b> 个「" + keyword + "」相关商品：");
+    results.sort(function(a, b) { return b.score - a.score; });
+    addBotMsg("🔍 找到 <b>" + results.length + "</b> 个相关商品（按评分排序）：");
     showProducts(results.slice(0, 6));
   }
 }
 
+// ============ 意图识别 ============
+function understandIntent(text) {
+  var t = text.toLowerCase();
+  
+  // 热门推荐
+  if (/热门|推荐|热卖|爆款|最好|划算/.test(t)) {
+    return "hot";
+  }
+  // 价格对比
+  if (/比价|对比|便宜|优惠|折扣|省|多少钱|价格/.test(t)) {
+    return "compare";
+  }
+  // 常见问题
+  var faqKeywords = {充:1,怎么用:1,充值:1,使用:1,到期:1,续费:1,退:1,开发票:1,支付:1,查询:1,售后:1,失败:1};
+  for (var k in faqKeywords) {
+    if (t.indexOf(k) >= 0) return "faq";
+  }
+  // 分类
+  for (var k in {视频:1,爱奇艺:1,腾讯:1,优酷:1,b站:1,外卖:1,美团:1,饿了么:1,瑞幸:1,咖啡:1,音乐:1,网易云:1,游戏:1,点卡:1,办公:1,wps:1,出行:1,滴滴:1}) {
+    if (t.indexOf(k) >= 0) return "category";
+  }
+  return "search";
+}
+
+// ============ 发送处理 ============
 function handleSend() {
   var input = document.getElementById("userInput");
   var text = input.value.trim();
   if (!text) return;
   input.value = "";
   
-  var catKeywords = {"视频": "视频会员", "爱奇艺": "视频会员", "腾讯": "视频会员", "优酷": "视频会员", "b站": "视频会员",
-                     "外卖": "外卖餐饮", "美团": "外卖餐饮", "饿了么": "外卖餐饮", "瑞幸": "外卖餐饮", "咖啡": "外卖餐饮",
-                     "音乐": "音乐会员", "网易云": "音乐会员", "qq音乐": "音乐会员",
-                     "出行": "生活服务", "滴滴": "生活服务", "办公": "办公效率", "wps": "办公效率",
-                     "游戏": "游戏娱乐", "点卡": "游戏娱乐"};
+  addUserMsg(text);
   
-  for (var key in catKeywords) {
-    if (text.indexOf(key) >= 0) {
-      selectCategory(catKeywords[key]);
-      return;
-    }
+  var intent = understandIntent(text);
+  
+  switch(intent) {
+    case "hot":
+      showHotRecommendations();
+      break;
+    case "compare":
+      addBotMsg("📊 <b>热门商品价格对比</b><br>以下是各平台热销商品的价格对比：");
+      showProducts(getHotProducts().slice(0, 3));
+      break;
+    case "faq":
+      var faqResults = searchFAQ(text);
+      if (faqResults.length > 0) {
+        showFAQ(faqResults, text);
+      } else {
+        searchProducts(text);
+      }
+      break;
+    case "category":
+      // 找到对应分类
+      for (var k in {视频会员:1,爱奇艺:1,腾讯视频:1,优酷:1,"b站":1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("视频会员"); return; }
+      }
+      for (var k in {外卖:1,美团:1,饿了么:1,瑞幸:1,咖啡:1,餐饮:1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("外卖餐饮"); return; }
+      }
+      for (var k in {音乐:1,网易云:1,qq音乐:1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("音乐会员"); return; }
+      }
+      for (var k in {出行:1,滴滴:1,生活:1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("生活服务"); return; }
+      }
+      for (var k in {办公:1,wps:1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("办公效率"); return; }
+      }
+      for (var k in {游戏:1,点卡:1}) {
+        if (text.indexOf(k) >= 0) { selectCategory("游戏娱乐"); return; }
+      }
+      searchProducts(text);
+      break;
+    default:
+      searchProducts(text);
   }
-  searchProducts(text);
 }
 
-// 初始化
+// ============ 初始化 ============
 document.getElementById("sendBtn").onclick = handleSend;
 document.getElementById("userInput").onkeydown = function(e) {
   if (e.key === "Enter") handleSend();
 };
 
 setTimeout(function() {
-  addBotMsg("👋 您好！我是<b>润石券宝</b>智能顾问<br><br>专注视频会员、外卖券、音乐会员等数字权益优惠，帮你省钱又省心！🎁");
+  addBotMsg("👋 您好！我是<b>润石券宝</b>智能顾问 🎫<br><br>可以帮您：<br>• 🔍 搜索想要的权益<br>• 💰 查看价格对比<br>• ❓ 解答常见问题<br>• 🎁 推荐热门商品");
   
   setTimeout(function() {
-    addBotMsg("🎯 <b>请选择您想要的权益类型：</b>");
-    var btns = CATEGORIES.map(function(cat) {
-      return {
-        label: cat.icon + " " + cat.name,
-        action: (function(id) { return function() { selectCategory(id); }; })(cat.id)
-      };
-    });
-    addButtons(btns);
-  }, 500);
-}, 600);
+    addBotMsg("🔥 <b>今日热门推荐</b>，要不要看看？");
+    showProducts(getHotProducts().slice(0, 2));
+    addButtons([
+      {label:"🔥 看热门推荐", action:showHotRecommendations},
+      {label:"📂 浏览全部分类", action:function(){ selectCategory("all"); }},
+      {label:"❓ 常见问题", action:function(){ searchProducts("怎么用"); }}
+    ]);
+  }, 600);
+}, 500);
 </script>
 </body>
 </html>
