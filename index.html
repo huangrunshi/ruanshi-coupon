@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>润石券宝 - 权益智能顾问</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:linear-gradient(135deg,#FF6B6B,#FFA07A);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px}
+    .header{text-align:center;color:#fff;padding:20px 0 12px;width:100%;max-width:480px}
+    .header h1{font-size:22px;margin-bottom:4px}
+    .header p{font-size:13px;opacity:0.85}
+    .tips{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 14px;margin:0 0 12px;max-width:480px;width:100%;border:1px solid rgba(255,255,255,0.2)}
+    .tips-title{color:#ffd700;font-size:12px;font-weight:600;margin-bottom:4px}
+    .tips-list{font-size:11px;color:rgba(255,255,255,0.8);line-height:1.6}
+    .chat-container{width:100%;max-width:480px;background:#f5f5f5;border-radius:16px 16px 0 0;flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:60vh}
+    .messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+    .bubble-wrap{display:flex;align-items:flex-end;gap:8px}
+    .bubble-wrap.user{flex-direction:row-reverse}
+    .avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:#fff;color:#FF6B6B;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+    .bubble{max-width:80%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
+    .bubble.bot{background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .bubble.user{background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;border-bottom-right-radius:4px}
+    .quick-btns{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 6px 40px}
+    .quick-btn{background:#fff;border:1.5px solid #FF6B6B;color:#FF6B6B;border-radius:16px;padding:8px 14px;font-size:12px;cursor:pointer;transition:all 0.2s;font-weight:500}
+    .quick-btn:hover{background:#FF6B6B;color:#fff;transform:translateY(-2px)}
+    .product-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.08);border:1px solid #eee;margin-bottom:10px}
+    .product-name{font-size:15px;font-weight:700;color:#222;margin-bottom:6px}
+    .product-price{font-size:20px;font-weight:800;color:#FF6B6B}
+    .product-price span{font-size:11px;color:#999;font-weight:400}
+    .product-desc{font-size:12px;color:#666;margin:6px 0;line-height:1.4}
+    .product-tags{margin:8px 0}
+    .tag{background:#fff0f0;color:#FF6B6B;font-size:11px;padding:2px 8px;border-radius:8px;margin-right:4px}
+    .tag.hot{background:#fff5f5;color:#e53e3e;font-weight:600}
+    .order-btn{display:block;width:100%;background:linear-gradient(135deg,#FF6B6B,#FFA07A);color:#fff;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;margin-top:8px;transition:all 0.2s}
+    .order-btn:hover{transform:scale(1.02)}
+    .input-area{background:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;border-top:1px solid #eee}
+    .input-area input{flex:1;border:2px solid #e0e0e0;border-radius:20px;padding:10px 16px;font-size:14px;outline:none}
+    .input-area input:focus{border-color:#FF6B6B}
+    .send-btn{width:42px;height:42px;background:linear-gradient(135deg,#FF6B6B,#FFA07A);border:none;border-radius:50%;color:#fff;font-size:16px;cursor:pointer;transition:all 0.2s}
+    .send-btn:hover{transform:scale(1.08)}
+    .search-box{background:#fff;padding:12px;border-bottom:1px solid #eee}
+    .search-box input{width:100%;border:2px solid #FF6B6B;border-radius:10px;padding:10px;font-size:14px;outline:none}
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>🎫 润石券宝</h1>
+  <p>一站式权益优惠入口</p>
+</div>
+<div class="tips">
+  <div class="tips-title">💡 使用说明</div>
+  <div class="tips-list">
+    📌 选择分类或直接搜索想要的权益<br>
+    🎁 下单后联系润石发货/充值<br>
+    💰 全网低价，正品保障
+  </div>
+</div>
+<div class="chat-container">
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="搜索想要的权益...">
+    <button class="send-btn" id="sendBtn">➤</button>
+  </div>
+</div>
+<script>
+// 产品数据库（可后续扩展）
+var PRODUCTS=[
+  // 视频会员
+  {id:"iqiyi_m",name:"爱奇艺黄金月卡",price:15.8,original:25,category:"视频会员",sub:"爱奇艺",period:"1个月",desc:"即时到账，正品保障",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"iqiyi_y",name:"爱奇艺黄金年卡",price:168,original:248,category:"视频会员",sub:"爱奇艺",period:"12个月",desc:"超值年费，追剧无忧",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"tencent_m",name:"腾讯视频月卡",price:16.8,original:30,category:"视频会员",sub:"腾讯视频",period:"1个月",desc:"NBA/热剧畅看",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"tencent_y",name:"腾讯视频年卡",price:168,original:288,category:"视频会员",sub:"腾讯视频",period:"12个月",desc:"年度大促低价",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"youku_m",name:"优酷月卡",price:10.8,original:20,category:"视频会员",sub:"优酷",period:"1个月",desc:"追剧必备",url:"https://smkq.ymsat.cn"},
+  {id:"youku_y",name:"优酷年卡",price:99,original:198,category:"视频会员",sub:"优酷",period:"12个月",desc:"半价年费",url:"https://smkq.ymsat.cn"},
+  {id:"bilibili_y",name:"B站大会员年卡",price:148,original:233,category:"视频会员",sub:"B站",period:"12个月",desc:"番剧/漫画免费看",url:"https://smkq.ymsat.cn",hot:true},
+  
+  // 外卖餐饮
+  {id:"meituan_50",name:"美团外卖券包",price:35,original:50,category:"外卖餐饮",sub:"美团",period:"即时",desc:"25元无门槛券包",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"meituan_100",name:"美团外卖大额券包",price:68,original:100,category:"外卖餐饮",sub:"美团",period:"即时",desc:"80元无门槛券包",url:"https://smkq.ymsat.cn"},
+  {id:"ele_50",name:"饿了么券包",price:35,original:50,category:"外卖餐饮",sub:"饿了么",period:"即时",desc:"红包抵用券",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"luckin_30",name:"瑞幸咖啡30元券",price:22,original:30,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"全国通用",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"luckin_50",name:"瑞幸咖啡50元券",price:38,original:50,category:"外卖餐饮",sub:"瑞幸",period:"即时",desc:"大杯拿铁可用",url:"https://smkq.ymsat.cn"},
+  {id:"kfc_30",name:"肯德基30元代金券",price:25,original:30,category:"外卖餐饮",sub:"肯德基",period:"即时",desc:"到店/外卖通用",url:"https://smkq.ymsat.cn"},
+  {id:"mcd_20",name:"麦当劳20元代金券",price:17,original:20,category:"外卖餐饮",sub:"麦当劳",period:"即时",desc:"正新鸡排/饮料",url:"https://smkq.ymsat.cn"},
+  
+  // 音乐会员
+  {id:"netmusic_y",name:"网易云音乐年卡",price:78,original:158,category:"音乐会员",sub:"网易云",period:"12个月",desc:"无损音质/免费下载",url:"https://smkq.ymsat.cn",hot:true},
+  {id:"qqmusic_y",name:"QQ音乐年卡",price:88,original:168,category:"音乐会员",sub:"QQ音乐",period:"12个月",desc:"付费歌曲畅听",url:"https://smkq.ymsat.cn"},
+  {id:"kugou_y",name:"酷狗音乐年卡",price:58,original:128,category:"音乐会员",sub:"酷狗",period:"12个月",desc:"HiFi音质",url:"https://smkq.ymsat.cn"},
+  
+  // 生活服务
+  {id:"didichuxing_20",name:"滴滴出行20元券包",price:15,original:20,category:"生活服务",sub:"滴滴",period:"即时",desc:"打车抵扣",url:"https://smkq.ymsat.cn"},
+  {id:"didichuxing_50",name:"滴滴出行50元券包",price:38,original:50,category:"生活服务",sub:"滴滴",period:"即时",desc:"大额出行券",url:"https://smkq.ymsat.cn"},
+  {id:"shuangshiyiqi_y",name:"双十一一键保价",price:9.9,original:29,category:"生活服务",sub:"其他",period:"一年有效",desc:"自动监控价格",url:"https://smkq.ymsat.cn"},
+  
+  // 办公效率
+  {id:"wps_y",name:"WPS会员年卡",price:68,original:148,category:"办公效率",sub:"WPS",period:"12个月",desc:"文档转换/云空间",url:"https://smkq.ymsat.cn"},
+  {id:"wps_m",name:"WPS会员月卡",price:8,original:15,category:"办公效率",sub:"WPS",period:"1个月",desc:"PDF转换",url:"https://smkq.ymsat.cn"},
+  {id:"youdao_y",name:"有道云笔记年卡",price:68,original:198,category:"办公效率",sub:"有道",period:"12个月",desc:"跨设备同步",url:"https://smkq.ymsat.cn"},
+  
+  // 游戏娱乐
+  {id:"game_50",name:"游戏点卡50元",price:45,original:50,category:"游戏娱乐",sub:"通用",period:"即时",desc:"王者荣耀/和平精英",url:"https://smkq.ymsat.cn"},
+  {id:"game_100",name:"游戏点卡100元",price:92,original:100,category:"游戏娱乐",sub:"通用",period:"即时",desc:"多游戏通用",url:"https://smkq.ymsat.cn"},
+  {id:"netease_100",name:"网易一卡通100元",price:93,original:100,category:"游戏娱乐",sub:"网易",period:"即时",desc:"梦幻西游/大话西游",url:"https://smkq.ymsat.cn"}
+];
+
+var CATEGORIES=[
+  {id:"all",name:"全部",icon:"🎁",desc:"查看所有权益"},
+  {id:"视频会员",name:"视频会员",icon:"🎬",desc:"爱奇艺/腾讯/优酷/B站",hot:true},
+  {id:"外卖餐饮",name:"外卖餐饮",icon:"🍜",desc:"美团/饿了么/瑞幸",hot:true},
+  {id:"音乐会员",name:"音乐会员",icon:"🎵",desc:"网易云/QQ音乐"},
+  {id:"生活服务",name:"生活服务",icon:"🚗",desc:"出行/生活优惠"},
+  {id:"办公效率",name:"办公效率",icon:"📝",desc:"WPS/文档处理"},
+  {id:"游戏娱乐",name:"游戏娱乐",icon:"🎮",desc:"游戏点卡/充值"}
+];
+
+var currentCategory = null;
+
+function addBotMsg(html) {
+  var wrap = document.createElement("div");
+  wrap.className = "bubble-wrap";
+  wrap.innerHTML = '<div class="avatar">🎫</div><div class="bubble bot">' + html + '</div>';
+  document.getElementById("messages").appendChild(wrap);
+  scrollToBottom();
+}
+
+function addUserMsg(text) {
+  var wrap = document.createElement("div");
+  wrap.className = "bubble-wrap user";
+  wrap.innerHTML = '<div class="bubble user">' + text + '</div><div class="avatar">🙋</div>';
+  document.getElementById("messages").appendChild(wrap);
+  scrollToBottom();
+}
+
+function addButtons(btns) {
+  var wrap = document.createElement("div");
+  wrap.className = "quick-btns";
+  for (var i = 0; i < btns.length; i++) {
+    var btn = document.createElement("button");
+    btn.className = "quick-btn";
+    btn.textContent = btns[i].label;
+    btn.onclick = btns[i].action;
+    wrap.appendChild(btn);
+  }
+  document.getElementById("messages").appendChild(wrap);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  var m = document.getElementById("messages");
+  setTimeout(function() { m.scrollTop = m.scrollHeight; }, 50);
+}
+
+function showProducts(list, title) {
+  if (list.length === 0) {
+    addBotMsg("😢 暂无符合条件的权益商品");
+    return;
+  }
+  var html = title ? '<div style="margin:8px 0 12px;font-weight:600;color:#FF6B6B">'+title+'</div>' : '';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    var hotTag = p.hot ? '<span class="tag hot">🔥 热卖</span>' : '';
+    var discount = Math.round((1 - p.price/p.original) * 100);
+    html += '<div class="product-card">' +
+      '<div class="product-name">' + p.name + ' <span style="background:#ffe0e0;color:#FF6B6B;font-size:11px;padding:2px 6px;border-radius:4px">省'+discount+'%</span></div>' +
+      '<div class="product-price">' + p.price + '元 <span style="text-decoration:line-through;color:#999;font-size:12px;font-weight:400">' + p.original + '元</span></div>' +
+      '<div class="product-desc">' + p.desc + ' · ' + p.period + '</div>' +
+      '<div class="product-tags"><span class="tag">' + p.sub + '</span><span class="tag">' + p.period + '</span>' + hotTag + '</div>' +
+      '<a class="order-btn" href="' + p.url + '" target="_blank">联系润石购买 →</a>' +
+      '</div>';
+  }
+  addBotMsg(html);
+}
+
+function selectCategory(catId) {
+  currentCategory = catId;
+  var cat = CATEGORIES.find(function(c) { return c.id === catId; });
+  var text = cat ? cat.name : "全部";
+  addUserMsg("我想看 " + text);
+  
+  var filtered = catId === "all" ? PRODUCTS : PRODUCTS.filter(function(p) { return p.category === catId; });
+  var hotProducts = filtered.filter(function(p) { return p.hot; });
+  
+  if (hotProducts.length > 0) {
+    addBotMsg("🔥 <b>热门推荐</b> — " + cat.name);
+    showProducts(hotProducts.slice(0, 3));
+  }
+  
+  setTimeout(function() {
+    if (filtered.length > 3) {
+      addBotMsg("📦 <b>更多" + cat.name + "</b>（共" + filtered.length + "款）");
+      showProducts(filtered.slice(3));
+    }
+    addBotMsg("💡 <b>没有找到想要的？</b>直接输入关键词搜索！");
+  }, 600);
+}
+
+function searchProducts(keyword) {
+  if (!keyword) return;
+  addUserMsg(keyword);
+  var kw = keyword.toLowerCase();
+  var results = PRODUCTS.filter(function(p) {
+    return p.name.toLowerCase().indexOf(kw) >= 0 ||
+           p.category.toLowerCase().indexOf(kw) >= 0 ||
+           p.sub.toLowerCase().indexOf(kw) >= 0 ||
+           p.desc.toLowerCase().indexOf(kw) >= 0;
+  });
+  
+  if (results.length === 0) {
+    addBotMsg("🔍 没有找到「" + keyword + "」相关商品<br><br>试试这些关键词：<br>• 视频、音乐、外卖<br>• 爱奇艺、腾讯、美团<br>• 游戏、办公、出行");
+    addButtons([
+      {label:"🎬 视频会员", action:function(){ selectCategory("视频会员"); }},
+      {label:"🍜 外卖餐饮", action:function(){ selectCategory("外卖餐饮"); }},
+      {label:"🎵 音乐会员", action:function(){ selectCategory("音乐会员"); }}
+    ]);
+  } else {
+    addBotMsg("🔍 找到 <b>" + results.length + "</b> 个「" + keyword + "」相关商品：");
+    showProducts(results.slice(0, 6));
+  }
+}
+
+function handleSend() {
+  var input = document.getElementById("userInput");
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  
+  // 检查是否是分类关键词
+  var catKeywords = {"视频": "视频会员", "爱奇艺": "视频会员", "腾讯": "视频会员", "优酷": "视频会员", "b站": "视频会员",
+                     "外卖": "外卖餐饮", "美团": "外卖餐饮", "饿了么": "外卖餐饮", "瑞幸": "外卖餐饮", "咖啡": "外卖餐饮",
+                     "音乐": "音乐会员", "网易云": "音乐会员", "qq音乐": "音乐会员",
+                     "出行": "生活服务", "滴滴": "生活服务", "办公": "办公效率", "wps": "办公效率",
+                     "游戏": "游戏娱乐", "点卡": "游戏娱乐"};
+  
+  for (var key in catKeywords) {
+    if (text.indexOf(key) >= 0) {
+      selectCategory(catKeywords[key]);
+      return;
+    }
+  }
+  
+  // 默认按关键词搜索
+  searchProducts(text);
+}
+
+// 初始化
+document.getElementById("sendBtn").onclick = handleSend;
+document.getElementById("userInput").onkeydown = function(e) {
+  if (e.key === "Enter") handleSend();
+};
+
+setTimeout(function() {
+  addBotMsg("👋 您好！我是<b>润石券宝</b>智能顾问<br><br>专注视频会员、外卖券、音乐会员等数字权益优惠，帮你省钱又省心！🎁");
+  
+  setTimeout(function() {
+    addBotMsg("🎯 <b>请选择您想要的权益类型：</b>");
+    var btns = CATEGORIES.map(function(cat) {
+      return {
+        label: cat.icon + " " + cat.name,
+        action: (function(id) { return function() { selectCategory(id); }; })(cat.id)
+      };
+    });
+    addButtons(btns);
+  }, 500);
+}, 600);
+</script>
+</body>
+</html>
